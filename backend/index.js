@@ -47,10 +47,10 @@ function authMiddleware(req, res, next) {
 const registerValidators = [
   body('username')
     .isAlphanumeric().withMessage('Username must be alphanumeric')
-    .isLength({ min: 3 }).withMessage('Username must be at least 3 characters')
+    .isLength({ min: 5 }).withMessage('Username must be at least 5 characters')
     .trim().escape(),
   body('password')
-    .isLength({ min: 4 }).withMessage('Password must be at least 4 characters')
+    .isLength({ min: 5 }).withMessage('Password must be at least 5 characters')
 ];
 
 const loginValidators = [
@@ -67,7 +67,7 @@ app.post('/register', authLimiter, registerValidators, async (req, res) => {
 
   try {
     const existingUser = await pool.query('SELECT 1 FROM users WHERE username = $1', [username]);
-    if (existingUser.rowCount > 0) return res.status(400).send('❌ Username already exists');
+    if (existingUser.rowCount > 0) return res.status(400).send('Username already exists');
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(
@@ -108,11 +108,11 @@ app.post('/login', authLimiter, loginValidators, async (req, res) => {
 
 // Protected Route
 app.get('/welcome', authMiddleware, (req, res) => {
-  res.send(`👋 Welcome, user ${req.user.userId}`);
+  res.send(`Welcome, user ${req.user.userId}`);
 });
 
 // Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
