@@ -11,7 +11,7 @@ const app = express();
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const jwtSecret = process.env.JWT_SECRET;
 
-// 🔒 Rate Limiters
+// Rate Limiters
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
