@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: logindb
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PGHOST=db
+      - PGUSER=user
+      - PGPASSWORD=password
+      - PGDATABASE=logindb
+      - PGPORT=5432
+    depends_on:
+      - db
